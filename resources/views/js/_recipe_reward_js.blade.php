@@ -7,6 +7,7 @@ $( document ).ready(function() {
     var $currencySelect = $('#rewardRowData').find('.currency-select');
     var $tableSelect = $('#rewardRowData').find('.table-select');
     var $raffleSelect = $('#rewardRowData').find('.raffle-select');
+    var $awardSelect = $('#rewardRowData').find('.award-select');
 
     $('#rewardTableBody .selectize').selectize();
     attachRewardTypeListener($('#rewardTableBody .reward-type'));
@@ -30,6 +31,7 @@ $( document ).ready(function() {
         else if (val == 'Currency') $clone = $currencySelect.clone();
         else if (val == 'LootTable') $clone = $tableSelect.clone();
         else if (val == 'Raffle') $clone = $raffleSelect.clone();
+        else if (val == 'Award') $clone = $awardSelect.clone();
 
         $cell.html('');
         $cell.append($clone);
@@ -45,6 +47,7 @@ $( document ).ready(function() {
             else if (val == 'Currency') $clone = $currencySelect.clone();
             else if (val == 'LootTable') $clone = $tableSelect.clone();
             else if (val == 'Raffle') $clone = $raffleSelect.clone();
+            else if (val == 'Award') $clone = $awardSelect.clone();
 
             $cell.html('');
             $cell.append($clone);

@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Auth;
 
 use App\Models\Item\Item;
+use App\Models\Award\Award;
 use App\Models\Item\ItemCategory;
 use App\Models\Loot\LootTable;
 use App\Models\Raffle\Raffle;
@@ -61,6 +62,7 @@ class RecipeController extends Controller
         return view('admin.recipes.create_edit_recipe', [
             'recipe' => new Recipe,
             'items' => Item::orderBy('name')->pluck('name', 'id'),
+            'awards' => Award::orderBy('name')->where('is_user_owned',1)->pluck('name', 'id'),
             'categories' => ItemCategory::orderBy('name')->pluck('name', 'id'),
             'currencies' => Currency::where('is_user_owned', 1)->orderBy('name')->pluck('name', 'id'),
             'tables' => LootTable::orderBy('name')->pluck('name', 'id'),
@@ -82,6 +84,7 @@ class RecipeController extends Controller
         return view('admin.recipes.create_edit_recipe', [
             'recipe' => $recipe,
             'items' => Item::orderBy('name')->pluck('name', 'id'),
+            'awards' => Award::orderBy('name')->where('is_user_owned',1)->pluck('name', 'id'),
             'categories' => ItemCategory::orderBy('name')->pluck('name', 'id'),
             'currencies' => Currency::where('is_user_owned', 1)->orderBy('name')->pluck('name', 'id'),
             'tables' => LootTable::orderBy('name')->pluck('name', 'id'),

@@ -218,6 +218,9 @@ class RecipeService extends Service
                     case 'Raffle':
                         $type = 'App\Models\Raffle\Raffle';
                         break;
+                    case 'Award':
+                        $type = 'App\Models\Award\Award';
+                        break;
                 }
                 $asset = $type::find($data['rewardable_id'][$key]);
                 addAsset($assets, $asset, $data['reward_quantity'][$key]);
