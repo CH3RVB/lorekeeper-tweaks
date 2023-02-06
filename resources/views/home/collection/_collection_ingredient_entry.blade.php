@@ -38,6 +38,28 @@
                         @endif
                     </div>
             </div>
+            @break
+            @case('Pet')
+            <div class="col-sm-3 col-6 text-center inventory-item">
+                <div class="mb-1">
+                @php 
+                $user = Auth::user();
+                $userOwnedpet = \App\Models\User\UserPet::where('user_id', $user->id)->where('pet_id', $ingredient->ingredient->id)->where('count', '>', 0)->get();
+                $userOwnedpet->pluck('count')->sum();
+
+                @endphp
+                
+                @if($userOwnedpet->count() || Auth::check() && Auth::user()->hasCollection($collection->id)) <img src="{{ $ingredient->ingredient->image_url }}" />
+                @elseif(Auth::check() && !Auth::user()->hasCollection($collection->id))   <img class="collectionnotunlocked" src="{{ $ingredient->ingredient->image_url }}" /> @endif
+                </div>
+                    <div>{!! $ingredient->ingredient->displayName !!} 
+                        @if($userOwnedpet->count() || Auth::check() && Auth::user()->hasCollection($collection->id))
+                        <i class="fas fa-check"></i>
+                        @else 
+                        ({{ $ingredient->quantity }})
+                        @endif</div>
+            </div>
+            @break
     @endswitch
 @endforeach
         </div>

@@ -65,6 +65,7 @@
             {{-- Check if sufficient ingredients have been selected? --}}
             {!! Form::open(['url' => 'collection/complete/'.$collection->id]) !!}
                 @include('widgets._inventory_select', ['user' => Auth::user(), 'inventory' => $inventory, 'categories' => $categories, 'selected' => $selected, 'page' => $page])
+                @include('widgets._pet_select', ['user' => Auth::user(), 'petinventory' => $petinventory, 'pet' => $pet, 'selected' => $selected, 'page' => $page])
                 <div class="text-right">
                     {!! Form::submit('Complete!', ['class' => 'btn btn-success']) !!}
                 </div>
@@ -75,6 +76,7 @@
 @endif
 
 @include('widgets._inventory_select_js')
+@include('widgets._pet_select_js')
 <script>
     $(document).keydown(function(e) {
     var code = e.keyCode || e.which;

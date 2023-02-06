@@ -12,6 +12,7 @@ use App\Models\Loot\LootTable;
 use App\Models\Raffle\Raffle;
 use App\Models\Currency\Currency;
 use App\Models\Collection\Collection;
+use App\Models\Pet\Pet;
 
 use App\Services\CollectionService;
 use App\Models\Collection\CollectionCategory;
@@ -74,6 +75,7 @@ class CollectionController extends Controller
             'raffles' => Raffle::where('rolled_at', null)->where('is_active', 1)->orderBy('name')->pluck('name', 'id'),
             'collections' => ['none' => 'No parent'] + Collection::visible()->pluck('name', 'id')->toArray(),
             'collectioncategories' => ['none' => 'No category'] + CollectionCategory::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
+            'pets' => Pet::orderBy('name')->pluck('name', 'id'),
         ]);
     }
 
@@ -96,6 +98,7 @@ class CollectionController extends Controller
             'raffles' => Raffle::where('rolled_at', null)->where('is_active', 1)->orderBy('name')->pluck('name', 'id'),
             'collections' => ['none' => 'No parent'] + Collection::visible()->where('id', '!=', $collection->id)->pluck('name', 'id')->toArray(),
             'collectioncategories' => ['none' => 'No category'] + CollectionCategory::orderBy('sort', 'DESC')->pluck('name', 'id')->toArray(),
+            'pets' => Pet::orderBy('name')->pluck('name', 'id'),
         ]);
     }
 

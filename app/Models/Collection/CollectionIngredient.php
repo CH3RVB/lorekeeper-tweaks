@@ -88,6 +88,8 @@ class CollectionIngredient extends Model
         {
             case 'Item':
                 return App\Models\Item\Item::where('id', $this->data[0])->get()[0];
+            case 'Pet':
+                return App\Models\Pet\Pet::where('id', $this->data[0])->get()[0];        
         }
         return null;
     }

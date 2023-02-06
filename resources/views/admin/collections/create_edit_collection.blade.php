@@ -72,8 +72,8 @@
 
 {!! Form::close() !!}
 
-@include('widgets._collection_ingredient_select_row', ['items' => $items, 'categories' => $categories, 'currencies' => $currencies])
-@include('widgets._collection_reward_select_row', ['items' => $items, 'currencies' => $currencies, 'tables' => $tables, 'raffles' => $raffles])
+@include('widgets._collection_ingredient_select_row', ['items' => $items,'pets' => $pets, 'categories' => $categories, 'currencies' => $currencies])
+@include('widgets._collection_reward_select_row', ['items' => $items, 'pets' => $pets,'currencies' => $currencies, 'tables' => $tables, 'raffles' => $raffles])
 
 @if($collection->id)
     <h3>Preview</h3>

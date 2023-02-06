@@ -10,6 +10,7 @@ use App\Models\User\User;
 use App\Models\User\UserItem;
 use App\Models\User\UserCurrency;
 use App\Models\User\UserCollection;
+use App\Models\User\UserPet;
 
 use App\Models\Collection\Collection;
 use App\Models\Collection\CollectionIngredient;
@@ -56,26 +57,27 @@ class CollectionManager extends Service
             }
 
             // If there are non-Currency ingredients.
-            if(isset($data['stack_id']))
-            {
+            if (isset($data['stack_id']) || isset($data['pet_stack_id'])) {
                 // Fetch the stacks from DB
-                $stacks = UserItem::whereIn('id', $data['stack_id'])->get()->map(function($stack) use ($data) {
+                $stacks = isset($data['stack_id']) ? UserItem::whereIn('id', $data['stack_id'])->get()->map(function ($stack) use ($data) {
                     $stack->count = (int)$data['stack_quantity'][$stack->id];
                     return $stack;
-                });
+                }) : null;
+
+                if (isset($data['pet_stack_id'])) {
+                    // Fetch the stacks from DB
+                    $petStacks = UserPet::whereIn('id', $data['pet_stack_id'])->get();
+                    isset($stacks) ? $stacks = $stacks->concat($petStacks) : $stacks = $petStacks;
+                }
 
                 // Check for sufficient ingredients
                 $plucked = $this->pluckIngredients($user, $collection, $stacks);
-                if(!$plucked) throw new \Exception('Insufficient ingredients selected.');
+                if (!$plucked) throw new \Exception('Insufficient ingredients selected.');
 
-                // Debit the ingredients
-                //$service = new InventoryManager();
-               // foreach($plucked as $id => $quantity) {
-                   // $stack = UserItem::find($id);
-                   // if(!$service->debitStack($user, 'Collection', ['data' => 'Used in '.$collection->name.' Collection'], $stack, $quantity)) throw new \Exception('Items could not be removed.');
-               // }
-            } else {
-                $items = $collection->ingredients->where('ingredient_type', 'Item');
+
+            }
+            else {
+                $items = $collection->ingredients->whereIn('ingredient_type', ['Item', 'Pet']);
                 if (count($items) > 0) throw new \Exception('Insufficient ingredients selected.');
             }
 
@@ -121,10 +123,11 @@ class CollectionManager extends Service
     public function pluckIngredients($user, $collection, $selectedStacks = null)
     {
         $user_items = UserItem::with('item')->whereNull('deleted_at')->where('count', '>', '0')->where('user_id', $user->id)->get();
+        $user_pets = UserPet::with('pet')->whereNull('deleted_at')->where('count', '>', '0')->where('user_id', $user->id)->get();
         $plucked = [];
         // foreach ingredient, search for a qualifying item, and select items up to the quantity, if insufficient continue onto the next entry
         foreach($collection->ingredients->sortBy('ingredient_type') as $ingredient)
-        {
+        { $prefix = '';
             if($selectedStacks) {
                 switch($ingredient->ingredient_type)
                 {
@@ -140,6 +143,9 @@ class CollectionManager extends Service
                     case 'MultiCategory':
                         $stacks = $selectedStacks->whereIn('item.item_category_id', $ingredient->data);
                         break;
+                    case 'Pet':
+                        $stacks = $selectedStacks->where('pet.id', $ingredient->data[0]);
+                        $prefix = 'pet';
                     case 'Currency':
                         continue 2;
                 }
@@ -159,6 +165,9 @@ class CollectionManager extends Service
                     case 'MultiCategory':
                         $stacks = $user_items->whereIn('item.item_category_id', $ingredient->data);
                         break;
+                    case 'Pet':
+                        $stacks = $user_pets->where('pet.id', $ingredient->data[0]);
+                        $prefix = 'pet';
                     case 'Currency':
                         continue 2;
                 }
@@ -168,14 +177,14 @@ class CollectionManager extends Service
             while($quantity_left > 0 && count($stacks) > 0)
             {
                 $stack = $stacks->pop();
-                $plucked[$stack->id] = $stack->count >= $quantity_left ? $quantity_left : $stack->count;
+                $plucked[$prefix . $stack->id] = $stack->count >= $quantity_left ? $quantity_left : $stack->count;
                 // Update the larger collection
-                $user_items = $user_items->map(function($s) use($stack, $plucked) {
-                    if($s->id == $stack->id) $s->count -= $plucked[$stack->id];
+                $user_items = $user_items->map(function($s) use($stack, $plucked, $prefix) {
+                    if($s->id == $stack->id) $s->count -= $plucked[$prefix . $stack->id];
                     if($s->count) return $s;
                     else return null;
                 })->filter();
-                $quantity_left -= $plucked[$stack->id];
+                $quantity_left -= $plucked[$prefix . $stack->id];
             }
             // If there are no more eligible ingredients but the requirement is not fulfilled, the pluck fails
             if($quantity_left > 0) return null;

@@ -15,7 +15,7 @@
             @php $row_counter = 0; @endphp
             @foreach($ingredients as $ingredient)
                 <tr class="ingredient-row" data-row="{{ $row_counter }}">
-                    <td>{!! Form::select('ingredient_type['.$row_counter.']', ['Item' => 'Item'], $ingredient->ingredient_type, ['class' => 'form-control ingredient-type', 'placeholder' => 'Select Ingredient Type']) !!}</td>
+                    <td>{!! Form::select('ingredient_type['.$row_counter.']', ['Item' => 'Item','Pet' => 'Pet'], $ingredient->ingredient_type, ['class' => 'form-control ingredient-type', 'placeholder' => 'Select Ingredient Type']) !!}</td>
                     <td class="ingredient-row-select">
                         @switch($ingredient->ingredient_type)
                             @case('Item')
@@ -53,6 +53,9 @@
                             @case('Currency')
                                 {!! Form::select('ingredient_data['.$row_counter.'][]', $currencies, $ingredient->data[0], ['class' => 'form-control currency-select selectize', 'placeholder' => 'Select Currency']) !!}
                                 @break
+                            @case('Pet')
+                                {!! Form::select('ingredient_data['.$row_counter.'][]', $pets, $ingredient->data[0], ['class' => 'form-control pet-select selectize', 'placeholder' => 'Select Pet']) !!}
+                                @break       
                         @endswitch
                     </td>
                     <td>{!! Form::text('ingredient_quantity['.$row_counter.']', $ingredient->quantity, ['class' => 'form-control ingredient_quantity']) !!}</td>

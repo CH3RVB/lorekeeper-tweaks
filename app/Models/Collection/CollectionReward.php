@@ -64,6 +64,8 @@ class CollectionReward extends Model
                 return $this->belongsTo('App\Models\Currency\Currency', 'rewardable_id');
             case 'LootTable':
                 return $this->belongsTo('App\Models\Loot\LootTable', 'rewardable_id');
+            case 'Pet':
+                return $this->belongsTo('App\Models\Pet\Pet', 'rewardable_id');
             case 'None':
                 // Laravel requires a relationship instance to be returned (cannot return null), so returning one that doesn't exist here.
                 return $this->belongsTo('App\Models\Collection\CollectionRewards', 'rewardable_id', 'collection_id')->whereNull('collection_id');

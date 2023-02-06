@@ -16,6 +16,8 @@ use App\Models\Item\Item;
 use App\Models\User\User;
 use App\Models\User\UserItem;
 use App\Models\Currency\Currency;
+use App\Models\User\UserPet;
+use App\Models\Pet\PetCategory;
 
 use App\Services\CollectionService;
 use App\Services\CollectionManager;
@@ -68,6 +70,7 @@ class CollectionController extends Controller
         $selected = $service->pluckIngredients(Auth::user(), $collection);
 
         $inventory = UserItem::with('item')->whereNull('deleted_at')->where('count', '>', '0')->where('user_id', Auth::user()->id)->get();
+        $petinventory = UserPet::with('pet')->whereNull('deleted_at')->where('count', '>', '0')->where('user_id', Auth::user()->id)->get();
 
         return view('home.collection._modal_collection', [
             'collection' => $collection,
@@ -75,7 +78,10 @@ class CollectionController extends Controller
             'item_filter' => Item::orderBy('name')->get()->keyBy('id'),
             'inventory' => $inventory,
             'page' => 'collection',
-            'selected' => $selected
+            'selected' => $selected,
+            'petinventory' => $petinventory,
+            'petcategories' => PetCategory::orderBy('sort', 'DESC')->get(),
+            'pet' => UserPet::with('pet')->whereNull('deleted_at')->where('count', '>', '0')->where('user_id', Auth::user()->id)->get()
         ]);
     }
 
@@ -90,7 +96,7 @@ class CollectionController extends Controller
         $collection = Collection::find($id);
         if(!$collection) abort(404);
 
-        if($service->completeCollection($request->only(['stack_id', 'stack_quantity']), $collection, Auth::user())) {
+        if($service->completeCollection($request->only(['stack_id', 'stack_quantity', 'pet_stack_id']), $collection, Auth::user())) {
             flash('Collection completed successfully. Congratulations!')->success();
         }
         else {

@@ -2,7 +2,7 @@
     <table class="table table-sm">
         <tbody id="ingredientRow">
             <tr class="ingredient-row">
-                <td>{!! Form::select('ingredient_type[]', ['Item' => 'Item'], null, ['class' => 'form-control ingredient-type', 'placeholder' => 'Select Ingredient Type']) !!}</td>
+                <td>{!! Form::select('ingredient_type[]', ['Item' => 'Item','Pet' => 'Pet'], null, ['class' => 'form-control ingredient-type', 'placeholder' => 'Select Ingredient Type']) !!}</td>
                 <td class="ingredient-row-select"></td>
                 <td>{!! Form::text('ingredient_quantity[]', 1, ['class' => 'form-control ingredient-quantity']) !!}</td>
                 <td class="text-right"><a href="#" class="btn btn-danger remove-ingredient-button">Remove</a></td>
@@ -11,6 +11,7 @@
     </table>
 
     {!! Form::select('ingredient_data[]', $items, null, ['class' => 'form-control item-select', 'placeholder' => 'Select Item']) !!}
+    {!! Form::select('ingredient_data[]', $pets, null, ['class' => 'form-control pet-select', 'placeholder' => 'Select Pet']) !!}
 
     <div class="multi-item-select-group">
         <div class="multi-item-list">

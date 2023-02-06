@@ -9,6 +9,7 @@ $( document ).ready(function() {
     var $multiCategorySelectGroup = $('#ingredientRowData').find('.multi-category-select-group');
     var $multiCategoryEntry = $('#ingredientRowData').find('.multi-category-entry');
     var $currencySelect = $('#ingredientRowData').find('.currency-select');
+    var $petSelect = $('#ingredientRowData').find('.pet-select');
     var currentRowID = $ingredientTable.find('.ingredient-row').length;
     $('#ingredientTableBody .selectize').selectize();
     attachIngredientTypeListener($('#ingredientTableBody .ingredient-type'));
@@ -35,6 +36,7 @@ $( document ).ready(function() {
             var row_num = $(this).parent().parent().data('row');
             var $clone = null;
             if(val == 'Item') $clone = $itemSelect.clone();
+            else if(val == 'Pet') $clone = $petSelect.clone();
             else if(val == 'MultiItem') {
                 $clone = $multiItemSelectGroup.clone();
                 attachAddMultiListener($clone.find('.add-multi-item-button'), val);
