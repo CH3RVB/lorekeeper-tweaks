@@ -21,7 +21,7 @@
                 </h5>
                 @if($comment->is_featured)<div class="ml-1 text-muted text-right col-6 mx-0 pr-1"><small class="text-success">Featured by Owner</small></div> @endif
             </div>
-            <div class="border p-3 rounded {{ $comment->is_featured ? 'border-success bg-light' : '' }} "><p>{!! nl2br($markdown->line($comment->comment)) !!} </p>
+            <div class="border p-3 rounded {{ $comment->is_featured ? 'border-success bg-light' : '' }} "><p>{!! $comment->comment !!} </p>
             <p class="border-top pt-1 text-right mb-0">
                 <small class="text-muted">{!! $comment->created_at !!}
                 @if($comment->created_at != $comment->updated_at) 
@@ -67,8 +67,7 @@
                                 <div class="modal-body">
                                     <div class="form-group">
                                         <label for="message">Update your message here:</label>
-                                        <textarea required class="form-control" name="message" rows="3">{{ $comment->comment }}</textarea>
-                                        <small class="form-text text-muted"><a target="_blank" href="https://help.github.com/articles/basic-writing-and-formatting-syntax">Markdown cheatsheet.</a></small>
+                                        <textarea required class="form-control wysiwyg" name="message" rows="3">{{ $comment->comment }}</textarea>
                                     </div>
                                 </div>
                                 <div class="modal-footer">
@@ -96,8 +95,7 @@
                                 <div class="modal-body">
                                     <div class="form-group">
                                         <label for="message">Enter your message here:</label>
-                                        <textarea required class="form-control" name="message" rows="3"></textarea>
-                                        <small class="form-text text-muted"><a target="_blank" href="https://help.github.com/articles/basic-writing-and-formatting-syntax">Markdown cheatsheet.</a></small>
+                                        <textarea required class="form-control wysiwyg" name="message" rows="3"></textarea>
                                     </div>
                                 </div>
                                 <div class="modal-footer">

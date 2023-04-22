@@ -77,7 +77,7 @@ class CommentController extends Controller implements CommentControllerInterface
         }
 
         $comment->commentable()->associate($model);
-        $comment->comment = $request->message;
+        $comment->comment = parse($request->message);
         $comment->approved = !Config::get('comments.approval_required');
         $comment->type = isset($request['type']) && $request['type'] ? $request['type'] : "User-User";
         $comment->save();
@@ -154,7 +154,7 @@ class CommentController extends Controller implements CommentControllerInterface
         ])->validate();
 
         $comment->update([
-            'comment' => $request->message
+            'comment' => parse($request->message),
         ]);
 
         return Redirect::to(URL::previous() . '#comment-' . $comment->getKey());
@@ -193,7 +193,7 @@ class CommentController extends Controller implements CommentControllerInterface
         $reply->commenter()->associate(Auth::user());
         $reply->commentable()->associate($comment->commentable);
         $reply->parent()->associate($comment);
-        $reply->comment = $request->message;
+        $reply->comment = parse($request->message);
         $reply->type = $comment->type;
         $reply->approved = !Config::get('comments.approval_required');
         $reply->save();
