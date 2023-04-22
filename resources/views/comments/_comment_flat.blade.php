@@ -21,10 +21,10 @@
                 </h5>
                 @if($comment->is_featured)<div class="ml-1 text-muted text-right col-6 mx-0 pr-1"><small class="text-success">Featured by Owner</small></div> @endif
             </div>
-            <div class="border p-3 rounded {{ $comment->is_featured ? 'border-success bg-light' : '' }} "><p>{!! $comment->comment !!} </p>
+            <div class="border p-3 rounded {{ $comment->is_featured ? 'border-success bg-light' : '' }} "><p>{!! nl2br($markdown->line($comment->comment)) !!} </p>
             <p class="border-top pt-1 text-right mb-0">
                 <small class="text-muted">{!! $comment->created_at !!}
-                @if($comment->created_at != $comment->updated_at) 
+                @if($comment->created_at != $comment->updated_at)
                     <span class="text-muted border-left mx-1 px-1">(Edited {!! ($comment->updated_at) !!})</span>
                 @endif
                 </small>
@@ -50,7 +50,7 @@
                 @endcan
             </div>
         @endif
-        
+
             @can('edit-comment', $comment)
                 <div class="modal fade" id="comment-modal-{{ $comment->getKey() }}" tabindex="-1" role="dialog">
                     <div class="modal-dialog" role="document">
@@ -67,7 +67,7 @@
                                 <div class="modal-body">
                                     <div class="form-group">
                                         <label for="message">Update your message here:</label>
-                                        <textarea class="form-control wysiwyg" name="message" rows="3">{{ $comment->comment }}</textarea>
+                                        <textarea required class="form-control wysiwyg" name="message" rows="3">{!! $comment->comment !!}</textarea>
                                     </div>
                                 </div>
                                 <div class="modal-footer">
@@ -107,7 +107,7 @@
                         </div>
                     </div>
                 </div>
-            @endcan 
+            @endcan
 
             @can('delete-comment', $comment)
                 <div class="modal fade" id="delete-modal-{{ $comment->getKey() }}" tabindex="-1" role="dialog">
@@ -130,7 +130,7 @@
                         </div>
                     </div>
                 </div>
-            @endcan 
+            @endcan
 
             <div class="modal fade" id="feature-modal-{{ $comment->getKey() }}" tabindex="-1" role="dialog">
                 <div class="modal-dialog" role="document">
@@ -154,29 +154,7 @@
                 </div>
             </div>
 
-            
+
         </div>
-
-            <br /><br />{{-- Margin bottom --}}
-            {{-- Recursion for children --}}
-            <div class="w-100 mw-100">
-                @if($grouped_comments->has($comment->getKey()))
-                    @foreach($grouped_comments[$comment->getKey()] as $child)
-                        @php $limit++; @endphp
-
-                        @if($limit >= 3) 
-                            <a href="{{ url('comment/').'/'.$comment->id }}"><span class="btn btn-secondary w-100 my-2">See More Replies</span></a>
-                            @break
-                        @endif
-
-                        @include('comments::_comment', [
-                            'comment' => $child,
-                            'reply' => true,
-                            'grouped_comments' => $grouped_comments
-                        ])
-                    @endforeach
-                @endif
-            </div>
-
     </div>
   </div>

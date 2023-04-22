@@ -25,7 +25,7 @@ class PermalinkController extends Controller
         $comments = Comment::all();
         //$comments = $comments->sortByDesc('created_at');
         $comment = $comments->find($id);
-         
+
         if(!$comment) abort(404);
         if(!$comment->commentable) abort(404);
 
@@ -49,9 +49,9 @@ class PermalinkController extends Controller
 
         if($comment->commentable_type == 'App\Models\User\UserProfile') $comment->location = $comment->commentable->user->url;
         else $comment->location = $comment->commentable->url;
-        
+
         return view('comments._perma_layout',[
-            'comment' => $comment,            
+            'comment' => $comment,
         ]);
     }
 }
