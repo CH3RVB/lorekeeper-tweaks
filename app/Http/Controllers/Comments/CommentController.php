@@ -134,6 +134,9 @@ class CommentController extends Controller implements CommentControllerInterface
                 $link = (($type != 'User-User') ? $submission->queueUrl . '/#comment-' . $comment->getKey() : $submission->url . '/#comment-' . $comment->getKey());
                 break;
             case 'App\Models\Forum':
+                Validator::make($request->all(), [
+                    'title' => 'required|string'
+                ])->validate();
                 flash('Thread created successfully.')->success();
                 return redirect('/forum/'.$comment->commentable_id.'/~'.$comment->id);
                 break;
