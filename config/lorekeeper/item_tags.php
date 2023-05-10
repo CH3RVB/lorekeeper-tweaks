@@ -24,4 +24,11 @@ return [
         'text_color' => '#ffffff',
         'background_color' => '#1fd1a7'
     ],
+
+     
+    'undisable' => [
+        'name' => 'Undisable',
+        'text_color' => '#ffffff',
+        'background_color' => '#1fd1a7'
+    ],
 ];
