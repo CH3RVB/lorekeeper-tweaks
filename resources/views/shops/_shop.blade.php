@@ -22,5 +22,8 @@
         @if($shop->is_fto)
             <span class="badge badge-pill badge-success">FTO Shop</span>
         @endif
+        @if($shop->faction_id)
+            <div class="text-muted small">Exclusive to {!! $shop->faction->displayName !!} members. </div>
+        @endif
     </div>
 </div>

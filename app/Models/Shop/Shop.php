@@ -13,7 +13,7 @@ class Shop extends Model
      * @var array
      */
     protected $fillable = [
-        'name', 'sort', 'has_image', 'description', 'parsed_description', 'is_active', 'is_staff', 'use_coupons', 'is_restricted', 'is_fto', 'allowed_coupons', 'is_timed_shop', 'start_at', 'end_at'
+        'name', 'sort', 'has_image', 'description', 'parsed_description', 'is_active', 'is_staff', 'use_coupons', 'is_restricted', 'is_fto', 'allowed_coupons', 'is_timed_shop', 'start_at', 'end_at', 'faction_id'
     ];
 
     /**
@@ -76,6 +76,14 @@ class Shop extends Model
     public function limits()
     {
         return $this->hasMany('App\Models\Shop\ShopLimit', 'shop_id');
+    }
+
+    /**
+     * GET FACTION OF THE SHOP
+     */
+    public function faction()
+    {
+        return $this->belongsTo('App\Models\WorldExpansion\Faction', 'faction_id');
     }
 
     /**********************************************************************************************

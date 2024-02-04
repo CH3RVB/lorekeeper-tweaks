@@ -8,6 +8,7 @@ use Config;
 use App\Models\Shop\Shop;
 use App\Models\Shop\ShopLimit;
 use App\Models\Shop\ShopStock;
+use App\Models\WorldExpansion\Faction;
 
 class ShopService extends Service
 {
@@ -222,6 +223,9 @@ class ShopService extends Service
         $data['is_staff'] = isset($data['is_staff']);
         $data['use_coupons'] = isset($data['use_coupons']);
         $data['allowed_coupons'] = isset($data['allowed_coupons']) ? $data['allowed_coupons'] : null;
+
+        if(isset($data['faction_id']) && $data['faction_id'] == 'none') $data['faction_id'] = null;
+        if((isset($data['faction_id']) && $data['faction_id']) && !Faction::where('id', $data['faction_id'])->exists()) throw new \Exception("The selected faction is invalid.");
 
         if(isset($data['remove_image']))
         {

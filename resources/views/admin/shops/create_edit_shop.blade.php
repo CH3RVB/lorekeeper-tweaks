@@ -64,6 +64,15 @@
     {!! Form::label('is_fto', 'FTO Only?', ['class' => 'form-check-label ml-3']) !!} {!! add_help('Only users who are currently FTO and staff can enter.') !!}
 </div>
 
+<div class="row">
+    <div class="col-md-8">
+        <div class="form-group">
+            {!! Form::label('Faction (Optional)') !!} {!! add_help('Only users that are in this faction can enter and buy from this shop. Leave set to none to disable faction limit.') !!}
+            {!! Form::select('faction_id', $factions, $shop->faction_id, ['class' => 'form-control']) !!}
+        </div>
+    </div>
+</div>
+
 <br>
 <div class="pl-4">
     <div class="form-group">

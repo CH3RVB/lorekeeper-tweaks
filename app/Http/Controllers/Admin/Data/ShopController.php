@@ -11,6 +11,7 @@ use App\Models\Shop\ShopStock;
 use App\Models\Item\Item;
 use App\Models\Currency\Currency;
 use App\Services\ShopService;
+use App\Models\WorldExpansion\Faction;
 
 use App\Http\Controllers\Controller;
 
@@ -52,6 +53,7 @@ class ShopController extends Controller
             'shop' => new Shop,
             'items' => Item::orderBy('name')->pluck('name', 'id'),
             'coupons' => $coupons,
+            'factions' => ['none' => 'No faction'] + Faction::where('is_user_faction', 1)->pluck('name', 'id')->toArray(),
         ]);
     }
 
@@ -76,6 +78,7 @@ class ShopController extends Controller
             'items' => Item::orderBy('name')->pluck('name', 'id'),
             'currencies' => Currency::orderBy('name')->pluck('name', 'id'),
             'coupons' => $coupons,
+            'factions' => ['none' => 'No faction'] + Faction::where('is_user_faction', 1)->pluck('name', 'id')->toArray(),
         ]);
     }
 
@@ -91,7 +94,7 @@ class ShopController extends Controller
     {
         $id ? $request->validate(Shop::$updateRules) : $request->validate(Shop::$createRules);
         $data = $request->only([
-            'name', 'description', 'image', 'remove_image', 'is_active', 'is_staff', 'use_coupons', 'is_fto', 'allowed_coupons', 'is_timed_shop', 'start_at', 'end_at'
+            'name', 'description', 'image', 'remove_image', 'is_active', 'is_staff', 'use_coupons', 'is_fto', 'allowed_coupons', 'is_timed_shop', 'start_at', 'end_at', 'faction_id'
         ]);
         if($id && $service->updateShop(Shop::find($id), $data, Auth::user())) {
             flash('Shop updated successfully.')->success();

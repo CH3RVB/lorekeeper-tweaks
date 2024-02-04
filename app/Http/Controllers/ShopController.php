@@ -18,6 +18,7 @@ use App\Models\Item\ItemTag;
 use App\Models\Currency\Currency;
 use App\Models\Item\ItemCategory;
 use App\Models\User\UserItem;
+use App\Models\WorldExpansion\Faction;
 
 class ShopController extends Controller
 {
@@ -73,6 +74,22 @@ class ShopController extends Controller
                 flash('You require a ' . $limit->item->name . ' to enter this store.')->error();
                 return redirect()->to('/shops');
                 }
+            }
+        }
+
+        if($shop->faction_id)
+        {
+            if(!Auth::check()) {
+                flash('You must be logged in to enter this shop.')->error();
+                return redirect()->to('/shops');
+            }
+            if(!Auth::user()->faction_id) {
+                flash('You do not have a faction.')->error();
+                return redirect()->to('/shops');
+            }
+            if(Auth::user()->faction_id != $shop->faction_id) {
+                flash('You must be in the '.$shop->faction->displayName.' faction to enter this shop.')->error();
+                return redirect()->to('/shops');
             }
         }
 
