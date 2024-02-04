@@ -18,7 +18,7 @@ class Prompt extends Model
     protected $fillable = [
         'prompt_category_id', 'name', 'summary', 'description', 'parsed_description', 'is_active',
         'start_at', 'end_at', 'hide_before_start', 'hide_after_end', 'has_image', 'prefix',
-        'hide_submissions'
+        'hide_submissions','faction_id'
     ];
 
     /**
@@ -83,6 +83,14 @@ class Prompt extends Model
     public function rewards()
     {
         return $this->hasMany('App\Models\Prompt\PromptReward', 'prompt_id');
+    }
+
+        /**
+     * GET FACTION OF THE PROMPT
+     */
+    public function faction()
+    {
+        return $this->belongsTo('App\Models\WorldExpansion\Faction', 'faction_id');
     }
 
     /**********************************************************************************************

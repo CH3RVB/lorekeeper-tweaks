@@ -14,6 +14,9 @@
             @if($prompt->end_at)
                 <div><strong>Ends: </strong>{!! format_date($prompt->end_at) !!} ({{ $prompt->end_at->diffForHumans() }})</div>
             @endif
+            @if($prompt->faction_id)
+                <div><strong>Faction Exclusive: </strong>{!! $prompt->faction->displayName !!}</div>
+            @endif
         </div>
         <div class="world-entry-text">
             <p>{{ $prompt->summary }}</p>

@@ -59,6 +59,13 @@ class SubmissionManager extends Service
             }
             else $prompt = null;
 
+            //then check if there is a faction limit and if the user meets it if so
+            if($prompt->faction_id)
+            {
+                if(!$user->faction_id) throw new \Exception("You do not have a faction.");
+                if($user->faction_id != $prompt->faction_id) throw new \Exception("You must be in the ".$prompt->faction->displayName." faction to submit to this prompt.");
+            }
+
             // The character identification comes in both the slug field and as character IDs
             // that key the reward ID/quantity arrays.
             // We'll need to match characters to the rewards for them.

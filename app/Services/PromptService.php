@@ -10,6 +10,7 @@ use App\Models\Prompt\PromptCategory;
 use App\Models\Prompt\Prompt;
 use App\Models\Prompt\PromptReward;
 use App\Models\Submission\Submission;
+use App\Models\WorldExpansion\Faction;
 
 class PromptService extends Service
 {
@@ -206,7 +207,7 @@ class PromptService extends Service
 
             if(!isset($data['hide_submissions']) && !$data['hide_submissions']) $data['hide_submissions'] = 0;
 
-            $prompt = Prompt::create(Arr::only($data, ['prompt_category_id', 'name', 'summary', 'description', 'parsed_description', 'is_active', 'start_at', 'end_at', 'hide_before_start', 'hide_after_end', 'has_image', 'prefix', 'hide_submissions']));
+            $prompt = Prompt::create(Arr::only($data, ['prompt_category_id', 'name', 'summary', 'description', 'parsed_description', 'is_active', 'start_at', 'end_at', 'hide_before_start', 'hide_after_end', 'has_image', 'prefix', 'hide_submissions','faction_id']));
 
             if ($image) $this->handleImage($image, $prompt->imagePath, $prompt->imageFileName);
 
@@ -250,7 +251,7 @@ class PromptService extends Service
 
             if(!isset($data['hide_submissions']) && !$data['hide_submissions']) $data['hide_submissions'] = 0;
 
-            $prompt->update(Arr::only($data, ['prompt_category_id', 'name', 'summary', 'description', 'parsed_description', 'is_active', 'start_at', 'end_at', 'hide_before_start', 'hide_after_end', 'has_image', 'prefix', 'hide_submissions']));
+            $prompt->update(Arr::only($data, ['prompt_category_id', 'name', 'summary', 'description', 'parsed_description', 'is_active', 'start_at', 'end_at', 'hide_before_start', 'hide_after_end', 'has_image', 'prefix', 'hide_submissions','faction_id']));
 
             if ($prompt) $this->handleImage($image, $prompt->imagePath, $prompt->imageFileName);
 
@@ -277,6 +278,9 @@ class PromptService extends Service
         if(!isset($data['hide_before_start'])) $data['hide_before_start'] = 0;
         if(!isset($data['hide_after_end'])) $data['hide_after_end'] = 0;
         if(!isset($data['is_active'])) $data['is_active'] = 0;
+
+        if(isset($data['faction_id']) && $data['faction_id'] == 'none') $data['faction_id'] = null;
+        if((isset($data['faction_id']) && $data['faction_id']) && !Faction::where('id', $data['faction_id'])->exists()) throw new \Exception("The selected faction is invalid.");
 
         if(isset($data['remove_image']))
         {

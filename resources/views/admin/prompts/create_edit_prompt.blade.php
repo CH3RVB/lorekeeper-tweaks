@@ -97,6 +97,15 @@
     {!! Form::select('hide_submissions', [0 => 'Submissions Visible After Approval', 1 => 'Hide Submissions Until Prompt Ends', 2 => 'Hide Submissions Always'], $prompt->hide_submissions, ['class' => 'form-control']) !!}
 </div>
 
+<div class="row">
+    <div class="col-md-8">
+        <div class="form-group">
+            {!! Form::label('Faction (Optional)') !!} {!! add_help('Only users that are in this faction can submit to this prompt. Leave set to none to disable faction limit.') !!}
+            {!! Form::select('faction_id', $factions, $prompt->faction_id, ['class' => 'form-control']) !!}
+        </div>
+    </div>
+</div>
+
 <h3>Rewards</h3>
 <p>Rewards are credited on a per-user basis. Mods are able to modify the specific rewards granted at approval time.</p>
 <p>You can add loot tables containing any kind of currencies (both user- and character-attached), but be sure to keep track of which are being distributed! Character-only currencies cannot be given to users.</p>
