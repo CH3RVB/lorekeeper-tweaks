@@ -2,6 +2,8 @@
 
 namespace App\Models\User;
 
+use Settings;
+
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -23,6 +25,8 @@ use App\Models\Character\CharacterBookmark;
 use App\Models\Gallery\GallerySubmission;
 use App\Models\Gallery\GalleryCollaborator;
 use App\Models\Gallery\GalleryFavorite;
+use App\Models\WorldExpansion\FactionRank;
+use App\Models\WorldExpansion\FactionRankMember;
 use App\Traits\Commenter;
 
 class User extends Authenticatable implements MustVerifyEmail
@@ -35,7 +39,7 @@ class User extends Authenticatable implements MustVerifyEmail
      * @var array
      */
     protected $fillable = [
-        'name', 'alias', 'rank_id', 'email', 'password', 'is_news_unread', 'is_banned', 'has_alias', 'avatar', 'is_sales_unread', 'birthday'
+        'name', 'alias', 'rank_id', 'email', 'password', 'is_news_unread', 'is_banned', 'has_alias', 'avatar', 'is_sales_unread', 'birthday', 'home_id', 'home_changed', 'faction_id', 'faction_changed'
     ];
 
     /**
@@ -61,7 +65,7 @@ class User extends Authenticatable implements MustVerifyEmail
      *
      * @var array
      */
-    protected $dates = ['birthday'];
+    protected $dates = ['birthday', 'home_changed', 'faction_changed'];
 
     /**
      * Accessors to append to the model.
@@ -78,6 +82,7 @@ class User extends Authenticatable implements MustVerifyEmail
      * @var string
      */
     public $timestamps = true;
+
 
     /**********************************************************************************************
 
@@ -158,6 +163,22 @@ class User extends Authenticatable implements MustVerifyEmail
     }
 
     /**
+     * Get the user's rank data.
+     */
+    public function home()
+    {
+        return $this->belongsTo('App\Models\WorldExpansion\Location', 'home_id');
+    }
+
+    /**
+     * Get the user's rank data.
+     */
+    public function faction()
+    {
+        return $this->belongsTo('App\Models\WorldExpansion\Faction', 'faction_id');
+    }
+
+    /**
      * Get the user's items.
      */
     public function items()
@@ -180,11 +201,11 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $this->hasMany('App\Models\Gallery\GalleryFavorite')->where('user_id', $this->id);
     }
-    
+
     /**
      * Get all of the user's character bookmarks.
      */
-    public function bookmarks() 
+    public function bookmarks()
     {
         return $this->hasMany('App\Models\Character\CharacterBookmark')->where('user_id', $this->id);
     }
@@ -344,6 +365,53 @@ class User extends Authenticatable implements MustVerifyEmail
     }
 
     /**
+     * Checks if the user can change location.
+     *
+     * @return string
+     */
+    public function getCanChangeLocationAttribute()
+    {
+        if(!isset($this->home_changed)) return true;
+        $limit = Settings::get('WE_change_timelimit');
+        switch($limit){
+            case 0:
+                return true;
+            case 1:
+                // Yearly
+                if(now()->year == $this->home_changed->year) return false;
+                else return true;
+
+            case 2:
+                // Quarterly
+                if(now()->year != $this->home_changed->year) return true;
+                if(now()->quarter != $this->home_changed->quarter) return true;
+                else return false;
+
+            case 3:
+                // Monthly
+                if(now()->year != $this->home_changed->year) return true;
+                if(now()->month != $this->home_changed->month) return true;
+                else return false;
+
+            case 4:
+                // Weekly
+                if(now()->year != $this->home_changed->year) return true;
+                if(now()->week != $this->home_changed->week) return true;
+                else return false;
+
+            case 5:
+                // Daily
+                if(now()->year != $this->home_changed->year) return true;
+                if(now()->month != $this->home_changed->month) return true;
+                if(now()->day != $this->home_changed->day) return true;
+                else return false;
+
+            default:
+                return true;
+        }
+    }
+
+    /**
      * Get's user birthday setting
      */
     public function getBirthdayDisplayAttribute()
@@ -380,6 +448,68 @@ class User extends Authenticatable implements MustVerifyEmail
         if(!$bday || $bday->diffInYears(carbon::now()) < 13) return false;
         else return true;
     }
+
+    /**
+     * Checks if the user can change faction.
+     *
+     * @return string
+     */
+    public function getCanChangeFactionAttribute()
+    {
+        if(!isset($this->faction_changed)) return true;
+        $limit = Settings::get('WE_change_timelimit');
+        switch($limit){
+            case 0:
+                return true;
+            case 1:
+                // Yearly
+                if(now()->year == $this->faction_changed->year) return false;
+                else return true;
+
+            case 2:
+                // Quarterly
+                if(now()->year != $this->faction_changed->year) return true;
+                if(now()->quarter != $this->faction_changed->quarter) return true;
+                else return false;
+
+            case 3:
+                // Monthly
+                if(now()->year != $this->faction_changed->year) return true;
+                if(now()->month != $this->faction_changed->month) return true;
+                else return false;
+
+            case 4:
+                // Weekly
+                if(now()->year != $this->faction_changed->year) return true;
+                if(now()->week != $this->faction_changed->week) return true;
+                else return false;
+
+            case 5:
+                // Daily
+                if(now()->year != $this->faction_changed->year) return true;
+                if(now()->month != $this->faction_changed->month) return true;
+                if(now()->day != $this->faction_changed->day) return true;
+                else return false;
+
+            default:
+                return true;
+        }
+    }
+
+    /**
+     * Get user's faction rank.
+     */
+    public function getFactionRankAttribute()
+    {
+        if(!isset($this->faction_id) || !$this->faction->ranks()->count()) return null;
+        if(FactionRankMember::where('member_type', 'user')->where('member_id', $this->id)->first()) return FactionRankMember::where('member_type', 'user')->where('member_id', $this->id)->first()->rank;
+        if($this->faction->ranks()->where('is_open', 1)->count()) {
+            $standing = $this->getCurrencies(true)->where('id', Settings::get('WE_faction_currency'))->first();
+            if(!$standing) return $this->faction->ranks()->where('is_open', 1)->where('breakpoint', 0)->first();
+            return $this->faction->ranks()->where('is_open', 1)->where('breakpoint', '<=', $standing->quantity)->orderBy('breakpoint', 'DESC')->first();
+        }
+    }
+
     /**********************************************************************************************
 
         OTHER FUNCTIONS
