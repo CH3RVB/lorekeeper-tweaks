@@ -95,4 +95,24 @@
     {!! Form::close() !!}
 </div>
 
+    <div class="card p-3 mb-2">
+        <h3>Online Status Setting</h3>
+        {!! Form::open(['url' => 'account/online-status']) !!}
+        <div class="form-group row">
+            <label class="col-md-2 col-form-label">Setting</label>
+            <div class="col-md-10">
+                {!! Form::select(
+                    'is_invisible',
+                    ['0' => 'Show your online status to other users.', '1' => 'Invisible. You will appear as offline no matter what.'],
+                    Auth::user()->settings->is_invisible,
+                    ['class' => 'form-control'],
+                ) !!}
+            </div>
+        </div>
+        <div class="text-right">
+            {!! Form::submit('Edit', ['class' => 'btn btn-primary']) !!}
+        </div>
+        {!! Form::close() !!}
+    </div>
+
 @endsection

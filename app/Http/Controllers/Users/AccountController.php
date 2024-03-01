@@ -275,4 +275,22 @@ class AccountController extends Controller
         }
         return redirect()->back();
     }
+
+    /**
+     * Changes if the user will be invisible or not.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  App\Services\UserService  $service
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function postOnlineStatus(Request $request, UserService $service)
+    {
+        if($service->updateOnlineStatus($request->input('is_invisible'), Auth::user())) {
+            flash('Online status updated successfully.')->success();
+        }
+        else {
+            foreach($service->errors()->getMessages()['error'] as $error) flash($error)->error();
+        }
+        return redirect()->back();
+    }
 }

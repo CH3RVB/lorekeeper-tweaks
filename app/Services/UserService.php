@@ -303,4 +303,15 @@ class UserService extends Service
         }
         return $this->rollbackReturn(false);
     }
+
+    /**
+     * Changes if the user will be invisible or not.
+     */
+    public function updateOnlineStatus($data, $user)
+    {
+        $user->settings->is_invisible = $data;
+        $user->settings->save();
+
+        return true;
+    }
 }
