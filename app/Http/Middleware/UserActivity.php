@@ -22,8 +22,11 @@ class UserActivity
         if (Auth::check()) {
             //if user is invisible...
             if(Auth::user()->settings->is_invisible){
-                //set last seen to null...
-                User::where('id', Auth::user()->id)->update(['last_seen' => null]);
+                //check if null so it's not just updating every time a page is clicked
+                if(Auth::user()->last_seen != null){
+                    //set last seen to null...
+                    User::where('id', Auth::user()->id)->update(['last_seen' => null]);
+                }
             }else{
                 //otherwise, we set the status.
                 $expiresAt = now()->addMinutes(2); /* keep online for 2 min */
