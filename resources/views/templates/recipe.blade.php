@@ -1,0 +1,1 @@
+@include('world.recipes._recipe_entry', ['recipe' => \App\Models\Recipe\Recipe::find($tag->data['recipe_id']), 'imageUrl' => \App\Models\Recipe\Recipe::find($tag->data['recipe_id'])->imageUrl, 'name' => \App\Models\Recipe\Recipe::find($tag->data['recipe_id'])->displayName, 'description' => \App\Models\Recipe\Recipe::find($tag->data['recipe_id'])->parsed_description])

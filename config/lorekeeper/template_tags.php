@@ -33,5 +33,10 @@ return [
         'description' => 'Embed a selected collection infocard onto a page.',
         'requires' => '\App\Services\CollectionService'
     ],
+    'recipe' => [
+        'name' => 'Recipe',
+        'description' => 'Embed a selected recipe infocard onto a page.',
+        'requires' => '\App\Services\RecipeService'
+    ],
 
 ];
