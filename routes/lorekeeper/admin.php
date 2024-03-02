@@ -268,6 +268,18 @@ Route::group(['prefix' => 'sales', 'middleware' => 'power:edit_pages'], function
     Route::get('character/{slug}', 'SalesController@getCharacterInfo');
 });
 
+# TEMPLATE TAGS
+Route::group(['prefix' => 'templates', 'middleware' => 'power:edit_pages'], function() {
+
+    Route::get('/', 'TemplateController@getIndex');
+    Route::get('create', 'TemplateController@getCreateTemplate');
+    Route::get('edit/{id}', 'TemplateController@getEditTemplate');
+    Route::get('delete/{id}', 'TemplateController@getDeleteTemplate');
+    Route::post('create', 'TemplateController@postCreateEditTemplate');
+    Route::post('edit/{id?}', 'TemplateController@postCreateEditTemplate');
+    Route::post('delete/{id}', 'TemplateController@postDeleteTemplate');
+});
+
 # SITE SETTINGS
 Route::group(['prefix' => 'settings', 'middleware' => 'power:edit_site_settings'], function() {
     Route::get('/', 'SettingsController@getIndex');

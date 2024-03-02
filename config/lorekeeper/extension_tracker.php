@@ -12,5 +12,13 @@ return [
     //     'version' => '1.0.0',
     // ],
     
-
+    'template_tags' => [
+        'key' => 'template_tags',
+        'wiki_key' => 'Template Tags',
+        'creators' => json_encode([
+            'Cylunny' => 'https://toyhou.se/cylunny',
+            'moif' => 'https://toyhou.se/moif'
+        ]),
+        'version' => '1.0.0',
+    ],
 ];
