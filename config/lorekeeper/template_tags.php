@@ -28,5 +28,10 @@ return [
         'description' => 'Allows you to easily add a little preview card of any world extension object of your choice.',
         'requires' => '\App\Services\WorldExpansion\WorldExpansionService'
     ],
+    'collection' => [
+        'name' => 'Collection',
+        'description' => 'Embed a selected collection infocard onto a page.',
+        'requires' => '\App\Services\CollectionService'
+    ],
 
 ];
