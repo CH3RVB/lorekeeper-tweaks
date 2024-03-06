@@ -35,7 +35,20 @@ class NewsService extends Service
             $data['user_id'] = $user->id;
             if(!isset($data['is_visible'])) $data['is_visible'] = 0;
 
+            if(isset($data['summary']) && $data['summary']) $data['parsed_summary'] = parse($data['summary']);
+            else $data['parsed_summary'] = null;
+
+            $image = null;
+            if(isset($data['image']) && $data['image']) {
+                $data['has_image'] = 1;
+                $image = $data['image'];
+                unset($data['image']);
+            }
+            else $data['has_image'] = 0;
+
             $news = News::create($data);
+
+            if ($image) $this->handleImage($image, $news->imagePath, $news->imageFileName);
 
             if($news->is_visible) $this->alertUsers();
 
@@ -64,7 +77,29 @@ class NewsService extends Service
             if(!isset($data['is_visible'])) $data['is_visible'] = 0;
             if(isset($data['bump']) && $data['is_visible'] == 1 && $data['bump'] == 1) $this->alertUsers();
 
+            $image = null;
+            if(isset($data['image']) && $data['image']) {
+                $data['has_image'] = 1;
+                $image = $data['image'];
+                unset($data['image']);
+            }
+
+            if(isset($data['remove_image']))
+            {
+                if($news && $news->has_image && $data['remove_image'])
+                {
+                    $data['has_image'] = 0;
+                    $this->deleteImage($news->imagePath, $news->imageFileName);
+                }
+                unset($data['remove_image']);
+            }
+
+            if(isset($data['summary']) && $data['summary']) $data['parsed_summary'] = parse($data['summary']);
+            else $data['parsed_summary'] = null;
+
             $news->update($data);
+
+            if ($news) $this->handleImage($image, $news->imagePath, $news->imageFileName);
 
             return $this->commitReturn($news);
         } catch(\Exception $e) { 
@@ -84,6 +119,7 @@ class NewsService extends Service
         DB::beginTransaction();
 
         try {
+            if($news->has_image) $this->deleteImage($news->imagePath, $news->imageFileName);
             $news->delete();
 
             return $this->commitReturn(true);
