@@ -126,11 +126,13 @@ class ShopController extends Controller {
         $stock = ShopStock::find($id);
         if(!$stock) abort(404);
 
+        $model = getAssetModelString(strtolower($stock->stock_type));
+
         return view('admin.shops._stock_modal', [
             'shop' => $stock->shop,
             'stock' => $stock,
             'currencies' => Currency::orderBy('name')->pluck('name', 'id'),
-            'items' => Item::orderBy('name')->pluck('name', 'id'),
+            'items'      => $model::orderBy('name')->pluck('name', 'id'),
         ]);
     }
 
