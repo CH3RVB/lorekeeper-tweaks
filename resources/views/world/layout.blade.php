@@ -8,6 +8,9 @@
 @section('sidebar')
     @include('world._sidebar')
 @endsection
+@section('second-sidebar')
+    @include('world._sidebar')
+@endsection
 
 @section('content')
     @yield('world-content')

@@ -117,7 +117,12 @@ main > .row {
     padding-right: 0px;
 }
 
-.sidebar ul {
+.second-sidebar {
+    text-align: left;
+    padding-left: 0px;
+}
+
+.sidebar ul, .second-sidebar ul  {
     list-style-type: none;
     display: inline-block;
     padding-top: 30px;
@@ -133,46 +138,59 @@ main > .row {
     box-shadow: 0px 0px 6px 3px rgba(0,0,0,0.1);
 }
 
+.second-sidebar ul li {
+    background-color: white;
+    border-top-right-radius: .25rem;
+    border-bottom-right-radius: .25rem;
+    margin-bottom: 1em;
+    padding: 0.4em 0;
+    
+    box-shadow: 0px 0px 6px 3px rgba(0,0,0,0.1);
+}
+
 .sidebar .sidebar-header,
-.sidebar .sidebar-section .sidebar-section-header {
+.sidebar .sidebar-section .sidebar-section-header,.second-sidebar .sidebar-header,
+.second-sidebar .sidebar-section .sidebar-section-header {
     text-transform: uppercase;
     font-family: Roboto Condensed, serif; 
     font-weight: bold;
 }
 
-.sidebar .sidebar-header {
+.sidebar .sidebar-header,.second-sidebar .sidebar-header {
     background-color: #343a40;
 }
-.sidebar .sidebar-header a {
+.sidebar .sidebar-header a,.second-sidebar .sidebar-header a {
     color: white;
 }
-.sidebar .sidebar-header a:hover {
+.sidebar .sidebar-header a:hover,.second-sidebar .sidebar-header a:hover  {
     background-color: transparent;
     color: rgba(255,255,255,0.8);
 }
 
 .sidebar a,
+.sidebar-section-header,
+.second-sidebar a,
 .sidebar-section-header {
     display: block;
     padding: 0.1em 1em;
 }
 
-.sidebar a {
+.sidebar a,.second-sidebar a  {
     text-transform: uppercase;
     font-family: Roboto Condensed, serif;
     color: rgba(0,0,0,0.4);
 }
-.sidebar a:hover {
+.sidebar a:hover,.second-sidebar a:hover {
     color: #16181b;
     background-color: #f8f9fa;
 }
-.sidebar a:hover, .sidebar a:active, .sidebar a:focus, .sidebar a:link {
+.sidebar a:hover, .sidebar a:active, .sidebar a:focus, .sidebar a:link,.second-sidebar a:hover, .second-sidebar a:active, .second-sidebar a:focus, .second-sidebar a:link {
     text-decoration: none;
 }
-.sidebar a:hover {
+.sidebar a:hover,.second-sidebar a:hover {
     text-decoration: none;
 }
-.sidebar a.active, .sidebar a.active:hover {
+.sidebar a.active, .sidebar a.active:hover,.second-sidebar a.active, .second-sidebar a.active:hover {
     color: white;
     background-color: #343a40;
 }
@@ -232,22 +250,22 @@ main > .row {
         left: -100%;
         transition: left 0.2s;
     }
-    .sidebar.active {
+    .sidebar.active, .second-sidebar.active {
         left: 0%;
     } 
 
-    .sidebar > ul {
+    .sidebar > ul, .second-sidebar > ul {
         padding-top: 0px;
     }
 
-    .sidebar ul {
+    .sidebar ul, .second-sidebar ul{
         list-style-type: none;
         display: block;
         padding-top: 30px;
         padding-left: 0px;
     }
 
-    .sidebar ul li {
+    .sidebar ul li, .second-sidebar ul li {
         background-color: white;
         border-radius: 0;
         margin-bottom: 1em;
@@ -268,6 +286,21 @@ main > .row {
 	.site-footer .navbar .navbar-nav {
 		flex-wrap: wrap; justify-content: center;
 	}
+
+    .second-sidebar {
+        position: absolute;
+        padding-right: 0px;
+        text-align: right;
+        background-color: #ddd;
+        z-index: 3;
+        right: 0px;
+        bottom: 0px;
+        top: 0px;
+        overflow-y: scroll;
+
+        right: -100%;
+        transition: right 0.2s;
+    }
 }
 
 /* Footer */
