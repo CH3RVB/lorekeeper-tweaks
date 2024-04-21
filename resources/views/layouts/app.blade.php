@@ -85,7 +85,7 @@
 			<div class="site-mobile-header bg-secondary"><a href="#" class="btn btn-sm btn-outline-light" id="mobileMenuButton">Menu <i class="fas fa-caret-right ml-1"></i></a></div>
 		@endif
         @if ( View::hasSection('second-sidebar') )
-			<div class="site-mobile-header bg-secondary"><a href="#" class="btn btn-sm btn-outline-light" id="secondMobileMenuButton">Menu 2 <i class="fas fa-caret-right ml-1"></i></a></div>
+			<div class="second-site-mobile-header bg-secondary"><a href="#" class="btn btn-sm btn-outline-light" id="secondMobileMenuButton">Second Menu<i class="fas fa-caret-right ml-1"></i></a></div>
 		@endif
 
         <main class="container-fluid">
@@ -112,7 +112,7 @@
                             @include('layouts._footer')
                     </div>
                 </div>
-                 <div class="second-sidebar col-lg-2" id="second-sidebar">
+                 <div class="second-sidebar col-lg-2" id="secondsidebar">
                     @yield('second-sidebar')
                 </div>
             </div>
@@ -164,10 +164,10 @@
                 });
 
                 var $secondMobileMenuButton = $('#secondMobileMenuButton');
-                var $second-sidebar = $('#second-sidebar');
+                var $secondsidebar = $('#secondsidebar');
                 $('#secondMobileMenuButton').on('click', function(e) {
                     e.preventDefault();
-                    $second-sidebar.toggleClass('active');
+                    $secondsidebar.toggleClass('active');
                 });
 
                 $('.inventory-log-stack').on('click', function(e) {

@@ -195,13 +195,13 @@ main > .row {
     background-color: #343a40;
 }
 
-.site-mobile-header {
+.site-mobile-header, .second-site-mobile-header {
     display: none;
     padding: 10px 20px;
 }
 
 @media (max-width: 767px) {
-	.site-mobile-header {
+	.site-mobile-header, .second-site-mobile-header {
 		top: 54px !important;
     }
     
@@ -219,6 +219,15 @@ main > .row {
         display: block;
         position: fixed;
 		top: 68px;
+        z-index: 4;
+        width: 100%;
+    }
+
+    .second-site-mobile-header {
+        display: block;
+        position: fixed;
+		top: 68px;
+        left: 225px;
         z-index: 4;
         width: 100%;
     }
@@ -250,8 +259,12 @@ main > .row {
         left: -100%;
         transition: left 0.2s;
     }
-    .sidebar.active, .second-sidebar.active {
+    .sidebar.active {
         left: 0%;
+    } 
+
+    .second-sidebar.active {
+        right: 0%;
     } 
 
     .sidebar > ul, .second-sidebar > ul {
