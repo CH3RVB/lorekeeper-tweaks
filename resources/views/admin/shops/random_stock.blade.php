@@ -92,7 +92,7 @@
             </div>
         </div>
 
-        <div class="card mb-3 stock-limited-quantity {{ $shop->shopRandomData['is_timed_stock'] ? '' : 'hide' }}">
+        <div class="card mb-3 stock-limited-quantity {{ isset($shop->shopRandomData['is_timed_stock']) ? '' : 'hide' }}">
             <div class="card-body">
                 <div>
                     {!! Form::label('quantity', 'Quantity') !!} {!! add_help('If left blank, will be set to 0 (sold out).') !!}
@@ -137,7 +137,7 @@
                 {!! Form::checkbox('is_timed_stock', 1, isset($shop->shopRandomData['is_timed_stock']) ? $shop->shopRandomData['is_timed_stock'] : 0, ['class' => 'form-check-input stock-timed stock-toggle stock-field', 'id' => 'is_timed_stock']) !!}
                 {!! Form::label('is_timed_stock', 'Set Timed Stock', ['class' => 'form-check-label ml-3']) !!} {!! add_help('Sets the stock as timed between the chosen dates.') !!}
             </div>
-            <div class="stock-timed-quantity {{ $shop->shopRandomData['is_timed_stock'] ? '' : 'hide' }}">
+            <div class="stock-timed-quantity {{ isset($shop->shopRandomData['is_timed_stock']) ? '' : 'hide' }}">
                 <div class="row">
                     <div class="col-md-6">
                         <div class="form-group">
