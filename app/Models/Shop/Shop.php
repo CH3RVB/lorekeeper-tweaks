@@ -13,7 +13,7 @@ class Shop extends Model
      * @var array
      */
     protected $fillable = [
-        'name', 'sort', 'has_image', 'description', 'parsed_description', 'is_active', 'is_staff', 'use_coupons', 'is_restricted', 'is_fto', 'allowed_coupons', 'is_timed_shop', 'start_at', 'end_at'
+        'name', 'sort', 'has_image', 'description', 'parsed_description', 'is_active', 'is_staff', 'use_coupons', 'is_restricted', 'is_fto', 'allowed_coupons', 'is_timed_shop', 'start_at', 'end_at','randomized_stock','random_data'
     ];
 
     /**
@@ -65,9 +65,9 @@ class Shop extends Model
     public function displayStock($model=null, $type=null)
     {
         if (!$model || !$type) {
-            return $this->belongsToMany('App\Models\Item\Item', 'shop_stock')->where('stock_type', 'Item')->withPivot('item_id', 'currency_id', 'cost', 'use_user_bank', 'use_character_bank', 'is_limited_stock', 'quantity', 'purchase_limit', 'id')->wherePivot('is_visible', 1);
+            return $this->belongsToMany('App\Models\Item\Item', 'shop_stock')->where('stock_type', 'Item')->withPivot('item_id', 'currency_id', 'cost', 'use_user_bank', 'use_character_bank', 'is_limited_stock', 'quantity', 'purchase_limit', 'id','is_random_stock')->wherePivot('is_visible', 1);
         }
-        return $this->belongsToMany($model, 'shop_stock', 'shop_id', 'item_id')->where('stock_type', $type)->withPivot('item_id', 'currency_id', 'cost', 'use_user_bank', 'use_character_bank', 'is_limited_stock', 'quantity', 'purchase_limit', 'id')->wherePivot('is_visible', 1);
+        return $this->belongsToMany($model, 'shop_stock', 'shop_id', 'item_id')->where('stock_type', $type)->withPivot('item_id', 'currency_id', 'cost', 'use_user_bank', 'use_character_bank', 'is_limited_stock', 'quantity', 'purchase_limit', 'id','is_random_stock')->wherePivot('is_visible', 1);
     }
 
     /**
@@ -160,5 +160,46 @@ class Shop extends Model
         // Get the coupons from the id in allowed_coupons
         $coupons = \App\Models\Item\Item::whereIn('id', json_decode($this->allowed_coupons, 1))->get();
         return $coupons;
+    }
+
+    /**
+     * Get the randomized_stock attribute as an associative array.
+     *
+     * @return array
+     */
+    public function getRandomStockAttribute() {
+        return json_decode($this->attributes['randomized_stock'], true);
+    }
+
+    /**
+     * Gets the decoded output json.
+     *
+     * @return array
+     */
+    public function getDecodedStockAttribute() {
+        $stocks = [];
+        if ($this->randomized_stock) {
+            $assets = $this->getRandomStockAttribute();
+
+            foreach ($assets as $key => $asset) {
+                    $stocks[] = (object) [
+                    'stock_type' => $asset['stock_type'],
+                    'item_id' => $asset['item_id'],
+                    'currency_id' => $asset['currency_id'],
+                    'cost' => $asset['cost'],
+                    ];
+            }
+        }
+
+        return $stocks;
+    }
+
+    /**
+     * Get the randomized_stock attribute as an associative array.
+     *
+     * @return array
+     */
+    public function getShopRandomDataAttribute() {
+        return json_decode($this->attributes['random_data'], true);
     }
 }

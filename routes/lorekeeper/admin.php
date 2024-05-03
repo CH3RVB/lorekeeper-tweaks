@@ -172,6 +172,9 @@ Route::group(['prefix' => 'data', 'namespace' => 'Data', 'middleware' => 'power:
     Route::post('shops/stock/delete/{id}', 'ShopController@postDeleteShopStock');
     // misc
     Route::get('shops/stock-type', 'ShopController@getShopStockType');
+    // random
+    Route::get('shops/random-stock/{id}', 'ShopController@getRandomStock');
+    Route::post('shops/random-stock/edit/{id}', 'ShopController@postEditRandomStock');
 
     # FEATURES (TRAITS)
     Route::get('trait-categories', 'FeatureController@getIndex');

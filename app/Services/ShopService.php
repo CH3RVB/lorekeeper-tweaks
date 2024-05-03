@@ -8,6 +8,7 @@ use Config;
 use App\Models\Shop\Shop;
 use App\Models\Shop\ShopLimit;
 use App\Models\Shop\ShopStock;
+use App\Models\Item\Item;
 
 class ShopService extends Service
 {
@@ -310,6 +311,96 @@ class ShopService extends Service
 
             return $this->commitReturn(true);
         } catch(\Exception $e) {
+            $this->setError('error', $e->getMessage());
+        }
+        return $this->rollbackReturn(false);
+    }
+
+    public function editRandomStock($data, $id)
+    {
+        DB::beginTransaction();
+
+        try {
+
+            $shop = Shop::findOrFail($id);
+
+            //i hope no one is looking at this :sob:
+            $shop->update([
+                'random_data' => json_encode([
+                    'stock_range' => isset($data['stock_range']) ? $data['stock_range'] : 0,
+                    'randomize_interval' => isset($data['randomize_interval']) ? $data['randomize_interval'] : 2,
+                    'max_items' => isset($data['max_items']) ? $data['max_items'] : null,
+
+                    'use_user_bank' => isset($data['use_user_bank']),
+                    'use_character_bank' => isset($data['use_character_bank']),
+                    'is_fto' => isset($data['is_fto']),
+                    'is_limited_stock' => isset($data['is_limited_stock']),
+                    'quantity' => isset($data['is_limited_stock']) ? $data['quantity'] : 0,
+                    'purchase_limit' => $data['purchase_limit'],
+                    'purchase_limit_timeframe' => $data['purchase_limit_timeframe'],
+                    'is_visible' => isset($data['is_visible']) ? $data['is_visible'] : 0,
+                    'restock' => isset($data['restock']) ? $data['restock'] : 0,
+                    'restock_quantity' => isset($data['restock']) && isset($data['quantity']) ? $data['quantity'] : 1,
+                    'restock_interval' => isset($data['restock_interval']) ? $data['restock_interval'] : 2,
+                    'range' => isset($data['range']) ? $data['range'] : 0,
+                    'disallow_transfer' => isset($data['disallow_transfer']) ? $data['disallow_transfer'] : 0,
+                    'is_timed_stock' => isset($data['is_timed_stock']),
+                    'start_at' => $data['start_at'],
+                    'end_at' => $data['end_at'],
+                ]),
+            ]);
+
+            //encode the options
+
+            $stocks = [];
+            if (isset($data['item_id'])) {
+                foreach ($data['item_id'] as $key => $id) {
+
+                    if (!$data['stock_type'][$key]) {
+                        throw new \Exception('One or more of the options was not given a type.');
+                    }
+
+                    if (!$id) {
+                        throw new \Exception('One or more of the options was not selected.');
+                    }
+
+                    //validate
+                    $checkstock = null;
+                    switch ($data['stock_type'][$key]) {
+                        case 'Item':
+                            $checkstock = Item::find($id);
+                            break;
+                    }
+
+                    if (!$checkstock) {
+                        throw new \Exception('Invalid item selected.');
+                    }
+
+                    if (isset($data['currency_id'][$key]) && $data['currency_id'][$key] == 'none' || !$data['currency_id'][$key]) {
+                        throw new \Exception('One or more of the options was not given a currency.');
+                    }
+
+                    $currency = Currency::find($data['currency_id'][$key]);
+                    if (!$checkstock) {
+                        throw new \Exception('Invalid currency selected.');
+                    }
+
+                    if (!$data['cost'][$key] || $data['cost'][$key] < 1) {
+                        throw new \Exception('Cost is required and must be an integer greater than 0.');
+                    }
+
+                    $stocks[] = (object) [
+                        'stock_type' => $data['stock_type'][$key],
+                        'item_id' => $id,
+                        'currency_id' => $data['currency_id'][$key],
+                        'cost' => $data['cost'][$key],
+                    ];
+                }
+                $shop->update(['randomized_stock' => json_encode($stocks)]);
+            }
+
+            return $this->commitReturn(true);
+        } catch (\Exception $e) {
             $this->setError('error', $e->getMessage());
         }
         return $this->rollbackReturn(false);

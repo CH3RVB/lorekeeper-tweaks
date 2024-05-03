@@ -129,6 +129,7 @@
     <h3>Shop Stock</h3>
     <div class="text-right mb-3">
         <a href="#" class="add-stock-button btn btn-outline-primary">Add Stock</a>
+        <a href="{{ url('admin/data/shops/random-stock/' . $shop->id) }}" class="btn btn-primary">Add/Edit Random Stock</a>
     </div>
     <div id="shopStock">
         <div class="row col-12">
@@ -148,6 +149,9 @@
                     <div class="row">
                         @if(!$stock->is_visible)<div class="col-2"> <i class="fas fa-eye-slash"></i></div>@endif
                         @if($stock->is_timed_stock)<div class="col-2"> <i class="fas fa-clock"></i></div>@endif
+                        @if ($stock->is_random_stock)
+                            <div class="col-2"> <i class="fas fa-question" data-toggle="tooltip" title="This stock is randomized!"></i></div>
+                        @endif
                     </div>
                 </div>
                 @if($stock->is_limited_stock) <div>Stock: {{ $stock->quantity }}</div> @endif

@@ -301,4 +301,47 @@ class ShopController extends Controller
         return redirect()->back();
     }
 
+    /**
+     * Get the random stock edit page
+     *
+     * @param mixed $id
+     *
+     * @return \Illuminate\Contracts\Support\Renderable
+     */
+    public function getRandomStock($id) {
+        $shop = Shop::find($id);
+        if (!$shop) {
+            abort(404);
+        }
+
+        return view('admin.shops.random_stock', [
+            'shopstock' => $shop->stock->where('is_random_stock', 1),
+            'shop'  => $shop,
+            'items' => Item::orderBy('name')->pluck('name', 'id'),
+            'currencies' => ['none' => 'Select a Currency'] + Currency::orderBy('name')->pluck('name', 'id')->toArray(),
+        ]);
+    }
+
+    /**
+     * Sorts currencies.
+     *
+     * @param App\Services\CharacterCategoryService $service
+     *
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function postEditRandomStock(Request $request, ShopService $service, $id) {
+        $data = $request->only(['stock_range','max_items','randomize_interval','stock_type','item_id','currency_id','cost', 'use_user_bank', 'use_character_bank', 'is_limited_stock', 'quantity', 'purchase_limit', 'purchase_limit_timeframe', 'is_fto','is_visible',
+        'restock', 'restock_quantity', 'restock_interval', 'range', 'is_timed_stock', 'start_at', 'end_at','disallow_transfer'
+        ]);
+        if ($service->editRandomStock($data, $id)) {
+            flash('Random stock settings updated successfully.')->success();
+        } else {
+            foreach ($service->errors()->getMessages()['error'] as $error) {
+                flash($error)->error();
+            }
+        }
+
+        return redirect()->back();
+    }
+
 }

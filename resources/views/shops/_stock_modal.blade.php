@@ -8,6 +8,9 @@
         @if($stock->is_limited_stock) <div>Stock: {{ $stock->quantity }}</div> @endif
         @if($stock->purchase_limit) <div class="text-danger">Max {{ $stock->purchase_limit }} @if($stock->purchase_limit_timeframe !== 'lifetime') {{ $stock->purchase_limit_timeframe }} @endif per user</div> @endif
         @if($stock->disallow_transfer) <div class="text-danger">Cannot be transferred after purchase</div> @endif
+        @if ($stock->is_random_stock)
+            <div> <i class="fas fa-question" data-toggle="tooltip" title="This stock is randomized!"></i></div>
+        @endif
     </div>
 
     @if($stock->item->parsed_description)
