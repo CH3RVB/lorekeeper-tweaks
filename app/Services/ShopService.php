@@ -9,6 +9,7 @@ use App\Models\Shop\Shop;
 use App\Models\Shop\ShopLimit;
 use App\Models\Shop\ShopStock;
 use App\Models\Item\Item;
+use App\Models\Currency\Currency;
 
 class ShopService extends Service
 {
