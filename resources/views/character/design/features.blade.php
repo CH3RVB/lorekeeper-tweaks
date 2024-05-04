@@ -22,21 +22,7 @@
 
         </div>
 
-        @if ($request->character->image->subtype_id)
-            <div class="form-group">
-                {!! Form::label('subtype_id', 'Species Subtype') !!}
-                @if ($request->character->is_myo_slot && $request->character->image->subtype_id)
-                    <div class="alert alert-secondary">{!! $request->character->image->subtype->displayName !!}</div>
-                @else
-                    <div id="subtypes">
-                        {!! Form::select('subtype_id', $subtypes, $request->subtype_id, ['class' => 'form-control', 'id' => 'subtype']) !!}
-                    </div>
-                @endif
-
-            </div>
-        @else
             <p class="alert alert-danger">You cannot select a subtype.</p>
-        @endif
 
         <div class="form-group">
             {!! Form::label('rarity_id', 'Character Rarity') !!}
