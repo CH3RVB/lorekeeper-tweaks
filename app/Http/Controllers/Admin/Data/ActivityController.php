@@ -41,6 +41,7 @@ class ActivityController extends Controller {
         return view('admin.activities.create_edit_activity', [
             'activity' => new Activity,
             'modules' => Config::get('lorekeeper.activity_modules'),
+            'limit_periods' => [null => 'None', 'Hour' => 'Hour', 'Day' => 'Day', 'Week' => 'Week', 'Month' => 'Month', 'Year' => 'Year']
         ]);
     }
 
@@ -56,6 +57,7 @@ class ActivityController extends Controller {
         return view('admin.activities.create_edit_activity', [
             'activity' => $activity,
             'modules' => Config::get('lorekeeper.activity_modules'),
+            'limit_periods' => [null => 'None', 'Hour' => 'Hour', 'Day' => 'Day', 'Week' => 'Week', 'Month' => 'Month', 'Year' => 'Year']
         ] + $activity->service->getEditData());
     }
 
@@ -70,7 +72,8 @@ class ActivityController extends Controller {
     public function postCreateEditActivity(Request $request, ActivityService $service, $id = null) {
         $id ? $request->validate(Activity::$updateRules) : $request->validate(Activity::$createRules);
         $data = $request->only([
-            'name', 'description', 'image', 'remove_image', 'is_active', 'module'
+            'name', 'description', 'image', 'remove_image', 'is_active', 'module',
+            'limit', 'limit_period',
         ]);
         if ($id && $service->updateActivity(Activity::find($id), $data)) {
             flash('Activity updated successfully.')->success();

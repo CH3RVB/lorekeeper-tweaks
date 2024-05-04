@@ -131,6 +131,9 @@ class ActivityService extends Service {
 
     try {
       if ($activity->has_image) $this->deleteImage($activity->ImagePath, $activity->ImageFileName);
+      DB::table('activity_log')
+      ->where('activity_id', $activity->id)
+      ->delete();
       $activity->delete();
 
       return $this->commitReturn(true);

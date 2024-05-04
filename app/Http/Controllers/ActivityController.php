@@ -38,8 +38,10 @@ class ActivityController extends Controller {
     public function getActivity($id) {
         $activity = Activity::where('id', $id)->where('is_active', 1)->first();
         if (!$activity) abort(404);
+
         return view('activities.activity', [
             'activity' => $activity,
+            'user' => Auth::user() ?? null,
         ] + $activity->service->getActData($activity));
     }
 

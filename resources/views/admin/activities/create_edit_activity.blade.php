@@ -43,7 +43,26 @@
     {!! Form::label('is_active', 'Set Active', ['class' => 'form-check-label ml-3']) !!} {!! add_help('If turned off, the activity will not be visible to regular users.') !!}
 </div>
 
-
+    @if (($activity->module && $activity->module != 'collection') || !$activity->module)
+        <h3>Completion Limits</h3>
+        <p>Limit the number of times a user can complete this. Leave blank to allow endless completions.</p>
+        <p>Set a number into number of completions. This will be applied for all time if you leave period blank, or per time period (ex: once a month, twice a week) if selected.</p>
+        <p>Please note that the collection module already has a lifetime completion limit of 1 per user.</p>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="form-group">
+                    {!! Form::label('limit', 'Number of Submissions (Optional)') !!} {!! add_help('Enter a number to limit how many times a user can submit. Leave blank to allow endless submissions.') !!}
+                    {!! Form::text('limit', $activity->limit, ['class' => 'form-control']) !!}
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    {!! Form::label('limit_period', 'Limit Period') !!} {!! add_help('The time period that the limit is set for.') !!}
+                    {!! Form::select('limit_period', $limit_periods, $activity->limit_period, ['class' => 'form-control', 'data-name' => 'limit_period']) !!}
+                </div>
+            </div>
+        </div>
+    @endif
 
 <h3>Activity Module</h3>
 An activity module defines it's behavior. Each module type will come with different settings once you've saved the activity.
