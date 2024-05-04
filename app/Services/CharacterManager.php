@@ -2027,9 +2027,16 @@ is_object($sender) ? $sender->id : null,
 
             $rarity = ($request->character->is_myo_slot && $request->character->image->rarity_id) ? $request->character->image->rarity : Rarity::find($data['rarity_id']);
             $species = ($request->character->is_myo_slot && $request->character->image->species_id) ? $request->character->image->species : Species::find($data['species_id']);
-            if(isset($data['subtype_id']) && $data['subtype_id'])
-                $subtype = ($request->character->is_myo_slot && $request->character->image->subtype_id) ? $request->character->image->subtype : Subtype::find($data['subtype_id']);
-            else $subtype = null;
+            if(isset($data['subtype_id']) && $data['subtype_id']){
+                //let's check if the character has a subtype already, if so, just pass on the data, if not, set
+                if($request->character->image->subtype_id){
+                    $subtype = ($request->character->is_myo_slot && $request->character->image->subtype_id) ? $request->character->image->subtype : Subtype::find($data['subtype_id']);
+                }else{
+                    $subtype = null;
+                }
+            }else {
+                $subtype = null;
+            }
             if(!$rarity) throw new \Exception("Invalid rarity selected.");
             if(!$species) throw new \Exception("Invalid species selected.");
             if($subtype && $subtype->species_id != $species->id) throw new \Exception("Subtype does not match the species.");
