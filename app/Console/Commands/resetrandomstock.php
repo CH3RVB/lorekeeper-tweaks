@@ -80,7 +80,7 @@ class resetrandomstock extends Command
             }
 
             //if randomized qty
-            if ($shop->range) {
+            if ($shop->shopRandomData['stock_range']) {
                 //get new qty
                 $stockqty = $this->getRandValue(1, $shop->shopRandomData['max_items']);
             } else {
