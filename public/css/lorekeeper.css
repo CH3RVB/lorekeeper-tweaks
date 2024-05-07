@@ -678,3 +678,7 @@ tr.accountbound {
     justify-content: center;
     aspect-ratio: 1;
 }
+/* RECIPES ***************************************************************************************/
+.recipe-image {
+    width: 150px;
+}
