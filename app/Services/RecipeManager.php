@@ -19,6 +19,7 @@ use App\Models\Currency\Currency;
 
 use App\Services\InventoryManager;
 use App\Services\CurrencyManager;
+use App\Models\Recipe\RecipeLog;
 
 class RecipeManager extends Service
 {
@@ -65,6 +66,16 @@ class RecipeManager extends Service
                     if(!$check) throw new \Exception('You require ' . $limit->reward->name . ' x '. $limit->quantity . ' to craft this');
                 }
             }
+
+            //then check the individual completion limit +timeframe
+            if ($recipe->limit) {
+                if (!$recipe->checkLimit($recipe, $user)) {
+                    throw new \Exception("You have already crafted this recipe the maximum number of times.");
+                }
+
+            }
+
+
             // Check for sufficient currencies
             $user_currencies = $user->getCurrencies(true);
             $currency_ingredients = $recipe->ingredients->where('ingredient_type', 'Currency');
@@ -110,6 +121,12 @@ class RecipeManager extends Service
             ];
 
             if(!fillUserAssets($recipe->rewardItems, null, $user, $logType, $craftingData)) throw new \Exception("Failed to distribute rewards to user.");
+
+            // make a log of the action.
+            $Log = RecipeLog::create([
+            'recipe_id' => $recipe->id,
+            'user_id' => $user->id,
+            ]);
 
             return $this->commitReturn(true);
         } catch(\Exception $e) {

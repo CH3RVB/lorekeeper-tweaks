@@ -59,6 +59,25 @@
 <h3>Recipe Rewards</h3>
 @include('widgets._recipe_reward_select', ['rewards' => $recipe->rewards])
 
+    <h3>Craft Limits</h3>
+    <p>Limit the number of times a user can craft this recipe. Leave blank to allow endless crafts.</p>
+    <p>Set a number into number of crafts. This will be applied for all time if you leave period blank, or per time period (ex: once a month, twice a week) if selected.</p>
+    <p>These limits will apply to any recipes added into activities as well, so be cautious.</p>
+    <div class="row">
+        <div class="col-md-4">
+            <div class="form-group">
+                {!! Form::label('limit', 'Number of Crafts (Optional)') !!} {!! add_help('Enter a number to limit how many times a user can craft this. Leave blank to allow endless crafts.') !!}
+                {!! Form::text('limit', $recipe->limit, ['class' => 'form-control']) !!}
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="form-group">
+                {!! Form::label('limit_period', 'Limit Period') !!} {!! add_help('The time period that the limit is set for.') !!}
+                {!! Form::select('limit_period', $limit_periods, $recipe->limit_period, ['class' => 'form-control', 'data-name' => 'limit_period']) !!}
+            </div>
+        </div>
+    </div>
+
 <div class="text-right">
     {!! Form::submit($recipe->id ? 'Edit' : 'Create', ['class' => 'btn btn-primary']) !!}
 </div>

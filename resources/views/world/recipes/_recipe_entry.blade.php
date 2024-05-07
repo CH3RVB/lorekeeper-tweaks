@@ -16,7 +16,10 @@
 
             {!! $name !!} @if(isset($idUrl) && $idUrl) <a href="{{ $idUrl }}" class="world-entry-search text-muted"><i class="fas fa-search"></i></a>  @endif
         </h3>
-
+        @if (isset($recipe->limit) && isset($recipe->limit_period))
+            <div class="alert alert-info text-center">You can craft this recipe {{ $recipe->limit }} time(s)
+                {{ $recipe->limit_period ? ' per ' . strtolower($recipe->limit_period) : '' }}.</div>
+        @endif
 
         <div class="row">
 

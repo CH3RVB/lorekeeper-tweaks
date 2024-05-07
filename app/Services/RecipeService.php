@@ -276,6 +276,9 @@ class RecipeService extends Service
             
             DB::table('user_recipes_log')->where('recipe_id', $recipe->id)->delete();
             DB::table('user_recipes')->where('recipe_id', $recipe->id)->delete();
+            DB::table('recipe_log')
+            ->where('recipe_id', $recipe->id)
+            ->delete();
             // FIXME $recipe->tags()->delete();
             if($recipe->has_image) $this->deleteImage($recipe->imagePath, $recipe->imageFileName); 
             $recipe->delete();

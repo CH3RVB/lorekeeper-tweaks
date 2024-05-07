@@ -5,6 +5,7 @@ namespace App\Models\Recipe;
 use Config;
 use DB;
 use App\Models\Model;
+use App\Models\Recipe\RecipeLog;
 
 class Recipe extends Model
 {
@@ -14,7 +15,8 @@ class Recipe extends Model
      * @var array
      */
     protected $fillable = [
-        'name', 'has_image', 'needs_unlocking', 'description', 'parsed_description', 'reference_url', 'artist_alias' ,'artist_url', 'is_limited'
+        'name', 'has_image', 'needs_unlocking', 'description', 'parsed_description', 'reference_url', 'artist_alias' ,'artist_url', 'is_limited',
+        'limit', 'limit_period',
     ];
 
     protected $appends = ['image_url'];
@@ -281,4 +283,33 @@ class Recipe extends Model
         }
         else return false;
    }
+
+       /**********************************************************************************************
+    OTHER
+     **********************************************************************************************/
+
+     public function checkLimit($recipe, $user)
+     {
+         if (isset($recipe->limit) && isset($recipe->limit_period)) {
+             $count['all'] = RecipeLog::completed($recipe->id, $user->id)->count();
+             $count['Hour'] = RecipeLog::completed($recipe->id, $user->id)->where('created_at', '>=', now()->startOfHour())->count();
+             $count['Day'] = RecipeLog::completed($recipe->id, $user->id)->where('created_at', '>=', now()->startOfDay())->count();
+             $count['Week'] = RecipeLog::completed($recipe->id, $user->id)->where('created_at', '>=', now()->startOfWeek())->count();
+             $count['Month'] = RecipeLog::completed($recipe->id, $user->id)->where('created_at', '>=', now()->startOfMonth())->count();
+             $count['Year'] = RecipeLog::completed($recipe->id, $user->id)->where('created_at', '>=', now()->startOfYear())->count();
+ 
+             $limit = $recipe->limit;
+             //if limit by time period is on
+             if ($recipe->limit_period) {
+                 if ($count[$recipe->limit_period] >= $limit) {
+                     return false;
+                 }
+ 
+             } else if ($count['all'] >= $limit) {
+                 return false;
+             }
+ 
+         }
+         return true;
+     }
 }

@@ -12,6 +12,7 @@ use App\Services\InventoryManager;
 use App\Services\RecipeManager;
 use App\Services\Service;
 use DB;
+use App\Models\Recipe\RecipeLog;
 
 class CraftingService extends Service
 {
@@ -88,6 +89,14 @@ class CraftingService extends Service
 
             }
 
+            //then check if the chosen recipe itself has a limit
+            if ($recipe->limit) {
+                if (!$recipe->checkLimit($recipe, $user)) {
+                    throw new \Exception("You have already crafted this recipe the maximum number of times.");
+                }
+
+            }
+
             $isComplete = $this->checkRecipe($user, $recipe);
             if (!$isComplete) {
                 throw new \Exception('You haven\'t gotten all the items yet for this recipe.');
@@ -145,6 +154,12 @@ class CraftingService extends Service
             // make a log of the action.
             $Log = ActivityLog::create([
                 'activity_id' => $activity->id,
+                'user_id' => $user->id,
+            ]);
+
+            // make a log of the action. (for the recipe this time)
+            $Recipelog = RecipeLog::create([
+                'recipe_id' => $recipe->id,
                 'user_id' => $user->id,
             ]);
 

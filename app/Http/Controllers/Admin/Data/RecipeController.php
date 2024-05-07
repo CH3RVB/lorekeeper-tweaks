@@ -66,6 +66,7 @@ class RecipeController extends Controller
             'tables' => LootTable::orderBy('name')->pluck('name', 'id'),
             'raffles' => Raffle::where('rolled_at', null)->where('is_active', 1)->orderBy('name')->pluck('name', 'id'),
             'recipes'=> Recipe::orderBy('name')->pluck('name', 'id'),
+            'limit_periods' => [null => 'None', 'Hour' => 'Hour', 'Day' => 'Day', 'Week' => 'Week', 'Month' => 'Month', 'Year' => 'Year']
         ]);
     }
     
@@ -87,6 +88,7 @@ class RecipeController extends Controller
             'tables' => LootTable::orderBy('name')->pluck('name', 'id'),
             'raffles' => Raffle::where('rolled_at', null)->where('is_active', 1)->orderBy('name')->pluck('name', 'id'),
             'recipes'=> Recipe::orderBy('name')->pluck('name', 'id'),
+            'limit_periods' => [null => 'None', 'Hour' => 'Hour', 'Day' => 'Day', 'Week' => 'Week', 'Month' => 'Month', 'Year' => 'Year']
         ]);
     }
 
@@ -105,7 +107,8 @@ class RecipeController extends Controller
             'name', 'description', 'image', 'remove_image', 'needs_unlocking',
             'ingredient_type', 'ingredient_data', 'ingredient_quantity',
             'rewardable_type', 'rewardable_id', 'reward_quantity', 
-            'is_limited', 'limit_type', 'limit_id', 'limit_quantity'
+            'is_limited', 'limit_type', 'limit_id', 'limit_quantity',
+            'limit', 'limit_period',
         ]);
         if($id && $service->updateRecipe(Recipe::find($id), $data, Auth::user())) {
             flash('Recipe updated successfully.')->success();
