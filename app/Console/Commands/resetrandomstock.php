@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use App\Models\Shop\Shop;
 use Illuminate\Console\Command;
+use Carbon\Carbon;
 
 class resetrandomstock extends Command
 {
